@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gravity Spaceship Battle</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="startMenu">
+      <h1>Gravity Spaceship Battle</h1>
+      <form id="gameSettingsForm">
+        <fieldset>
+          <legend>Gravity Settings</legend>
+          <label for="gravityType">Gravity Type:</label>
+          <select id="gravityType">
+            <option value="point">Point Gravity</option>
+            <option value="side">Side Gravity</option>
+            <option value="none">No Gravity</option>
+          </select>
+
+          <div id="pointGravitySettings">
+            <label for="gravityPointX"
+              >Gravity Point X:
+              <input
+                type="range"
+                id="gravityPointX"
+                min="0"
+                max="1"
+                step="0.1"
+                value="0.5"
+              />
+              <span id="gravityPointXValue">0.5</span>
+            </label>
+            <label for="gravityPointY"
+              >Gravity Point Y:
+              <input
+                type="range"
+                id="gravityPointY"
+                min="0"
+                max="1"
+                step="0.1"
+                value="0.5"
+              />
+              <span id="gravityPointYValue">0.5</span>
+            </label>
+          </div>
+
+          <div id="sideGravitySettings" class="hidden">
+            <label for="gravityDirection">Gravity Direction:</label>
+            <select id="gravityDirection">
+              <option value="bottom">Bottom</option>
+              <option value="top">Top</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+
+          <label for="gravityStrength"
+            >Gravity Strength:
+            <input
+              type="number"
+              id="gravityStrength"
+              min="0"
+              step="0.01"
+              value="0.05"
+            />
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Ship Movement</legend>
+          <label for="thrustPower"
+            >Thrust Power:
+            <input
+              type="number"
+              id="thrustPower"
+              min="0"
+              step="0.1"
+              value="0.2"
+            />
+          </label>
+          <label for="airResistance"
+            >Air Resistance:
+            <input
+              type="range"
+              id="airResistance"
+              min="0"
+              max="10"
+              step="1"
+              value="1"
+            />
+            <span id="airResistanceValue">1</span>
+          </label>
+          <label for="hasMaxSpeed">
+            <input type="checkbox" id="hasMaxSpeed" checked />
+            Enable Max Speed
+          </label>
+          <label for="maxSpeed"
+            >Max Speed:
+            <input type="number" id="maxSpeed" min="0" value="5" />
+          </label>
+          <label for="rotationSpeed"
+            >Rotation Speed:
+            <input
+              type="number"
+              id="rotationSpeed"
+              min="0"
+              step="0.1"
+              value="0.1"
+            />
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Weapons</legend>
+          <label for="projectileSpeed"
+            >Projectile Speed:
+            <input type="number" id="projectileSpeed" min="1" value="5" />
+          </label>
+          <label for="maxProjectiles"
+            >Max Projectiles:
+            <input type="number" id="maxProjectiles" min="1" value="5" />
+          </label>
+        </fieldset>
+
+        <button type="submit">Start Game</button>
+      </form>
+    </div>
+    <script type="module" src="./js/game.js"></script>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+}
+
+#startMenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+h1 {
+  text-align: center;
+  color: #fff;
+}
+
+fieldset {
+  border: 1px solid #444;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+legend {
+  color: #fff;
+  padding: 0 10px;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+  color: #fff;
+}
+
+input[type="range"],
+input[type="number"],
+select {
+  width: 100%;
+  margin-top: 5px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 5px;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+button {
+  display: block;
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button#restartButton {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button#restartButton:hover {
+  background-color: #45a049;
+}
+
+button#resumeButton,
+button#restartButton {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+button#resumeButton:hover,
+button#restartButton:hover {
+    background-color: #45a049;
+}
+
+.hidden {
+  display: none;
+}
+
+#startMenu::-webkit-scrollbar {
+  width: 10px;
+}
+
+#startMenu::-webkit-scrollbar-track {
+  background: #333;
+}
+
+#startMenu::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 5px;
+}
+
+#startMenu::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
