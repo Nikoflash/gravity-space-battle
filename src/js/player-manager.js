@@ -1,6 +1,7 @@
 /**
  * Player Manager Module
  * Manages multiple players in multiplayer games
+ * Last updated: 2025-01-24
  */
 
 export class PlayerManager {
@@ -22,7 +23,10 @@ export class PlayerManager {
         lastInputs: null,
         interpolatedX: playerData.x,
         interpolatedY: playerData.y,
-        interpolatedAngle: playerData.angle
+        interpolatedAngle: playerData.angle,
+        // Ensure velocity fields exist
+        velocityX: playerData.velocityX || 0,
+        velocityY: playerData.velocityY || 0
       });
     });
   }
@@ -33,9 +37,12 @@ export class PlayerManager {
         ...playerData,
         isLocal: playerData.id === this.localPlayerId,
         lastInputs: null,
-        interpolatedX: 640, // Default spawn position
-        interpolatedY: 360,
-        interpolatedAngle: 0
+        interpolatedX: playerData.x || 640, // Default spawn position
+        interpolatedY: playerData.y || 360,
+        interpolatedAngle: playerData.angle || 0,
+        // Ensure velocity fields exist
+        velocityX: playerData.velocityX || 0,
+        velocityY: playerData.velocityY || 0
       });
     }
   }
@@ -117,3 +124,5 @@ export class PlayerManager {
     return colors.filter(color => !usedColors.has(color));
   }
 }
+
+export { PlayerManager };

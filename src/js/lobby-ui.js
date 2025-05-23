@@ -1,6 +1,7 @@
 /**
  * Lobby UI Module
  * Handles the user interface for multiplayer lobby functionality
+ * Last updated: 2025-01-24
  */
 
 import lobbySystem from './lobby-system.js';
@@ -215,13 +216,15 @@ export class LobbyUI {
       this.removePlayerFromList(playerId);
     };
     
-    lobbySystem.onGameStart = () => {
+    lobbySystem.onGameStart = (gameData) => {
+      console.log('LobbyUI: onGameStart called with gameData:', gameData);
       this.hide();
       // Trigger event to start multiplayer game
       window.dispatchEvent(new CustomEvent('startMultiplayerGame', {
         detail: {
           roomCode: lobbySystem.currentRoom?.code,
-          networkManager: networkManager
+          networkManager: networkManager,
+          gameData: gameData
         }
       }));
     };

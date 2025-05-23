@@ -1,18 +1,27 @@
 /**
  * Multiplayer Game Module
  * Extends the base game.js for online multiplayer functionality
+ * Last updated: 2025-01-24
  */
 
 import { Game } from './game.js';
-import { NetworkManager } from './network-manager.js';
-import { GameStateSync } from './game-state-sync.js';
+import networkManager from './network-manager.js';
+import GameStateSync from './game-state-sync.js';
 import { PlayerManager } from './player-manager.js';
 import { Renderer } from './renderer.js';
 import { UI } from './ui.js';
+import { PhysicsEngine } from './physics.js';
 
 export class MultiplayerGame extends Game {
   constructor(canvas, config, networkManager, roomCode) {
     super(canvas, config);
+    
+    console.log('Creating MultiplayerGame with:', { canvas, config, networkManager, roomCode });
+    
+    // Ensure physics is initialized (in case parent didn't do it)
+    if (!this.physics) {
+      this.physics = new PhysicsEngine(this.config);
+    }
     
     this.networkManager = networkManager;
     this.roomCode = roomCode;
@@ -31,17 +40,41 @@ export class MultiplayerGame extends Game {
     this.interpolationDelay = 100; // 100ms interpolation delay
     this.stateBuffer = [];
     
-    // Setup network event handlers
+    // CRITICAL: Set up handlers FIRST before clearing
+    // This ensures we register new handlers immediately
     this.setupNetworkHandlers();
+    
+    console.log('MultiplayerGame initialized');
+  }
+  
+  clearNetworkHandlers() {
+    // Remove any existing handlers to prevent duplicates
+    const messageTypes = [
+      'game-starting',
+      'game-state-update',
+      'player-joined',
+      'player-left',
+      'game-ended',
+      'input-ack'
+    ];
+    
+    console.log('Clearing network handlers for types:', messageTypes);
+    
+    messageTypes.forEach(type => {
+      this.networkManager.off(type);
+    });
   }
   
   setupNetworkHandlers() {
-    // Handle game starting
+    console.log('Setting up network handlers');
+    
+    // Handle game starting (might already be started)
     this.networkManager.on('game-starting', (data) => {
+      console.log('Received game-starting event:', data);
       this.handleGameStart(data);
     });
     
-    // Handle state updates
+    // Handle state updates - THIS IS THE CRITICAL ONE
     this.networkManager.on('game-state-update', (data) => {
       this.handleStateUpdate(data);
     });
@@ -70,10 +103,24 @@ export class MultiplayerGame extends Game {
     this.networkManager.on('input-ack', (data) => {
       this.gameStateSync.handleInputAck(data);
     });
+    
+    console.log('Network handlers setup complete. Registered handlers:', 
+      Array.from(this.networkManager.messageHandlers.keys()));
   }
   
   handleGameStart(data) {
     console.log('Game starting with state:', data);
+    
+    if (!data || !data.gameState) {
+      console.error('Invalid game start data:', data);
+      return;
+    }
+    
+    // Initialize canvas size if needed
+    if (this.canvas.width === 0 || this.canvas.height === 0) {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    }
     
     this.gameStarted = true;
     this.gameState = data.gameState;
@@ -91,6 +138,12 @@ export class MultiplayerGame extends Game {
   }
   
   handleStateUpdate(data) {
+    // Don't process updates if game hasn't started yet
+    if (!this.gameStarted) {
+      console.log('Ignoring state update - game not started yet');
+      return;
+    }
+    
     // Add state to buffer for interpolation
     this.stateBuffer.push({
       timestamp: data.timestamp,
@@ -183,7 +236,7 @@ export class MultiplayerGame extends Game {
     this.renderer.clear();
     
     // Render gravity
-    this.renderer.drawGravity(this.physics);
+    this.renderer.drawGravity(this.config);
     
     // Render all players
     this.playerManager.getAllPlayers().forEach(player => {
@@ -231,5 +284,7 @@ export class MultiplayerGame extends Game {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
+    // Clear network handlers when stopping
+    this.clearNetworkHandlers();
   }
 }

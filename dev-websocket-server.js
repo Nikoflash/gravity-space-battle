@@ -308,7 +308,10 @@ function handleStartGame(connectionId, data) {
   });
   
   // Start game loop
-  startGameLoop(room.code);
+  // Delay slightly to allow clients to set up their handlers
+  setTimeout(() => {
+    startGameLoop(room.code);
+  }, 500);
   
   // Notify all players
   broadcastToRoom(room.code, {

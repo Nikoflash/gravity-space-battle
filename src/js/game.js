@@ -1,4 +1,5 @@
 // game.js
+// Last updated: 2025-01-24
 import { GameConfig } from "./config.js";
 import { Renderer } from "./renderer.js";
 import { InputHandler } from "./input.js";
@@ -7,8 +8,6 @@ import { Spaceship } from "./spaceship.js";
 import { CollisionSystem } from "./collision.js";
 import { UI } from "./ui.js";
 import { Menu } from "./menu.js";
-import { MultiplayerGame } from "./multiplayer-game.js";
-import { NetworkManager } from "./network-manager.js";
 
 export class Game {
   constructor() {
@@ -181,12 +180,17 @@ const game = new Game();
 let multiplayerGame = null;
 
 // Handle multiplayer game start
-window.addEventListener('startMultiplayerGame', (event) => {
-  const { roomCode, networkManager } = event.detail;
+window.addEventListener('startMultiplayerGame', async (event) => {
+  const { roomCode, networkManager, gameData } = event.detail;
+  
+  console.log('Starting multiplayer game with event data:', event.detail);
   
   // Stop single player game if running
   game.stop();
   game.menu.hide();
+  
+  // Dynamically import multiplayer game to avoid circular dependency
+  const { MultiplayerGame } = await import('./multiplayer-game.js');
   
   // Create and start multiplayer game
   multiplayerGame = new MultiplayerGame(
@@ -195,6 +199,12 @@ window.addEventListener('startMultiplayerGame', (event) => {
     networkManager,
     roomCode
   );
+  
+  // If we have game data, start the game immediately
+  // The server now delays the game loop to give us time to set up
+  if (gameData) {
+    multiplayerGame.handleGameStart(gameData);
+  }
 });
 
 // Handle return to lobby

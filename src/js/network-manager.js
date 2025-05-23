@@ -1,6 +1,7 @@
 /**
  * Network Manager Module
  * Handles WebSocket connections and message routing for multiplayer functionality
+ * Last updated: 2025-01-24
  */
 
 export class NetworkManager {
@@ -110,7 +111,7 @@ export class NetworkManager {
     if (handler) {
       handler(data);
     } else {
-      console.warn('No handler for message type:', type);
+      console.warn(`No handler for message type: ${type}. Registered handlers:`, Array.from(this.messageHandlers.keys()));
     }
   }
 
@@ -228,6 +229,34 @@ export class NetworkManager {
    */
   getLatency() {
     return this.latency;
+  }
+  
+  /**
+   * Get current player ID
+   * @returns {string} Player ID (connection ID)
+   */
+  getPlayerId() {
+    return this.connectionId;
+  }
+  
+  /**
+   * Send player input to server
+   * @param {Object} input - Player input data
+   */
+  sendPlayerInput(input) {
+    // Increment sequence number for each input
+    if (!this.inputSequence) {
+      this.inputSequence = 0;
+    }
+    const sequence = ++this.inputSequence;
+    
+    this.send('player-input', { 
+      input,
+      sequence,
+      timestamp: Date.now()
+    });
+    
+    return sequence;
   }
 
   /**

@@ -1,6 +1,7 @@
 /**
  * Lobby System Module
  * Manages game room creation, joining, and player management
+ * Last updated: 2025-01-24
  */
 
 import networkManager from './network-manager.js';
@@ -190,8 +191,12 @@ export class LobbySystem {
    * @param {Object} data - Game start data
    */
   handleGameStart(data) {
+    console.log('LobbySystem: handleGameStart called with data:', data);
     if (this.onGameStart) {
+      console.log('LobbySystem: Calling onGameStart callback');
       this.onGameStart(data);
+    } else {
+      console.log('LobbySystem: No onGameStart callback registered');
     }
   }
 

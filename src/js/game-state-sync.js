@@ -1,12 +1,12 @@
 /**
  * Game State Synchronization Module
  * Handles synchronization of game state between clients and server
+ * Last updated: 2025-01-24
  */
 
-import networkManager from './network-manager.js';
-
 export class GameStateSync {
-  constructor() {
+  constructor(game) {
+    this.game = game;
     this.localState = {};
     this.serverState = {};
     this.playerId = null;
@@ -24,17 +24,6 @@ export class GameStateSync {
     // Callbacks
     this.onStateUpdate = null;
     this.onPlayerUpdate = null;
-    
-    this.setupNetworkHandlers();
-  }
-
-  /**
-   * Set up network message handlers
-   */
-  setupNetworkHandlers() {
-    networkManager.on('state-update', (data) => this.handleStateUpdate(data));
-    networkManager.on('player-update', (data) => this.handlePlayerUpdate(data));
-    networkManager.on('input-ack', (data) => this.handleInputAck(data));
   }
 
   /**
@@ -63,8 +52,10 @@ export class GameStateSync {
     // Store pending input for reconciliation
     this.pendingInputs.push(inputData);
     
-    // Send to server
-    networkManager.send('player-input', inputData);
+    // Send to server using the game's network manager
+    if (this.game && this.game.networkManager) {
+      this.game.networkManager.send('player-input', inputData);
+    }
     
     return sequenceNumber;
   }
@@ -196,7 +187,10 @@ export class GameStateSync {
             angle: this.interpolateAngle(playerA.angle, playerB.angle, ratio),
             // Copy non-interpolated values
             health: playerB.health,
-            score: playerB.score
+            score: playerB.score,
+            alive: playerB.alive,
+            color: playerB.color,
+            name: playerB.name
           };
         }
       }
@@ -319,5 +313,5 @@ export class GameStateSync {
   }
 }
 
-// Export singleton instance
-export default new GameStateSync();
+// Use default export to avoid Parcel redefinition issues
+export default GameStateSync;
