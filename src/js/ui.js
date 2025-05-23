@@ -12,11 +12,23 @@ export class UI {
         const x = player.color === 'blue' ? 10 : this.ctx.canvas.width - barWidth - 10;
         const y = 10;
 
+        // Draw background
         this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         this.ctx.fillRect(x, y, barWidth, barHeight);
 
+        // Draw health bar
         this.ctx.fillStyle = player.color;
-        this.ctx.fillRect(x, y, barWidth * (player.health / 100), barHeight);
+        const healthPercent = player.health / 100;
+        const healthWidth = barWidth * healthPercent;
+        
+        if (player.color === 'blue') {
+            // Player 1 (blue) - decrease from right to left
+            const healthX = x + barWidth - healthWidth;
+            this.ctx.fillRect(healthX, y, healthWidth, barHeight);
+        } else {
+            // Player 2 (red) - decrease from left to right
+            this.ctx.fillRect(x, y, healthWidth, barHeight);
+        }
     }
 
     drawGameOver(players) {
@@ -51,5 +63,42 @@ export class UI {
             this.restartButton.remove();
             this.restartButton = null;
         }
+    }
+    
+    updateMultiplayerHealth(healthData) {
+        // Draw health bars for all players
+        const barHeight = 5;
+        const barWidth = 150;
+        const padding = 10;
+        let yOffset = padding;
+        
+        healthData.forEach((player, index) => {
+            const x = padding;
+            const y = yOffset;
+            
+            // Draw player name and color
+            this.ctx.fillStyle = player.color;
+            this.ctx.font = '12px Arial';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText(player.name, x, y - 2);
+            
+            // Draw background
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            this.ctx.fillRect(x, y, barWidth, barHeight);
+            
+            // Draw health bar
+            this.ctx.fillStyle = player.color;
+            const healthPercent = Math.max(0, player.health / player.maxHealth);
+            const healthWidth = barWidth * healthPercent;
+            this.ctx.fillRect(x, y, healthWidth, barHeight);
+            
+            // Draw health text
+            this.ctx.fillStyle = 'white';
+            this.ctx.font = '10px Arial';
+            this.ctx.textAlign = 'right';
+            this.ctx.fillText(`${Math.round(player.health)}/${player.maxHealth}`, x + barWidth + 40, y + barHeight);
+            
+            yOffset += barHeight + padding + 10;
+        });
     }
 }

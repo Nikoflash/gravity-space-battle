@@ -7,8 +7,10 @@ import { Spaceship } from "./spaceship.js";
 import { CollisionSystem } from "./collision.js";
 import { UI } from "./ui.js";
 import { Menu } from "./menu.js";
+import { MultiplayerGame } from "./multiplayer-game.js";
+import { NetworkManager } from "./network-manager.js";
 
-class Game {
+export class Game {
   constructor() {
     this.config = new GameConfig();
     this.canvas = document.getElementById("gameCanvas");
@@ -27,6 +29,8 @@ class Game {
     this.players = [];
     this.gameOver = false;
     this.isRunning = false;
+    this.state = 'menu'; // Add state property
+    this.animationId = null; // Add animation ID for canceling
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
@@ -93,7 +97,7 @@ class Game {
     if (this.gameOver) {
       this.isRunning = false;
     } else {
-      requestAnimationFrame(() => this.gameLoop());
+      this.animationId = requestAnimationFrame(() => this.gameLoop());
     }
   }
 
@@ -156,7 +160,54 @@ class Game {
     ];
     this.gameLoop();
   }
+  
+  start() {
+    this.state = 'playing';
+    this.isRunning = true;
+    this.gameLoop();
+  }
+  
+  stop() {
+    this.state = 'stopped';
+    this.isRunning = false;
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
 }
 
 const game = new Game();
+let multiplayerGame = null;
+
+// Handle multiplayer game start
+window.addEventListener('startMultiplayerGame', (event) => {
+  const { roomCode, networkManager } = event.detail;
+  
+  // Stop single player game if running
+  game.stop();
+  game.menu.hide();
+  
+  // Create and start multiplayer game
+  multiplayerGame = new MultiplayerGame(
+    game.canvas,
+    game.config,
+    networkManager,
+    roomCode
+  );
+});
+
+// Handle return to lobby
+window.addEventListener('return-to-lobby', () => {
+  if (multiplayerGame) {
+    multiplayerGame.stop();
+    multiplayerGame = null;
+  }
+  
+  // Show lobby UI
+  import('./lobby-ui.js').then(module => {
+    module.default.show();
+  });
+});
+
 game.menu.show();

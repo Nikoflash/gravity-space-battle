@@ -36,16 +36,17 @@ export class PhysicsEngine {
     });
   }
 
-  updatePosition(obj) {
+  updatePosition(obj, customMaxSpeed = null) {
     // Apply air resistance
     obj.velocity.x *= this.config.airResistance;
     obj.velocity.y *= this.config.airResistance;
 
-    // Apply max speed if enabled
+    // Apply max speed if enabled (use custom max speed if provided)
     if (this.config.hasMaxSpeed) {
+      const maxSpeed = customMaxSpeed || this.config.maxSpeed;
       const speed = Math.sqrt(obj.velocity.x ** 2 + obj.velocity.y ** 2);
-      if (speed > this.config.maxSpeed) {
-        const factor = this.config.maxSpeed / speed;
+      if (speed > maxSpeed) {
+        const factor = maxSpeed / speed;
         obj.velocity.x *= factor;
         obj.velocity.y *= factor;
       }

@@ -78,6 +78,27 @@ button:hover {
   background-color: #45a049;
 }
 
+/* Menu buttons layout */
+.menu-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.menu-buttons button {
+  flex: 1;
+  max-width: 200px;
+}
+
+#multiplayerButton {
+  background-color: #2196F3;
+}
+
+#multiplayerButton:hover {
+  background-color: #1976D2;
+}
+
 button#restartButton {
   padding: 10px 20px;
   font-size: 18px;
@@ -129,4 +150,309 @@ button#restartButton:hover {
 
 #startMenu::-webkit-scrollbar-thumb:hover {
   background: #888;
+}
+
+/* Lobby UI Styles */
+.lobby-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.lobby-container.hidden {
+  display: none;
+}
+
+.lobby-content {
+  background-color: rgba(20, 20, 20, 0.95);
+  border: 2px solid #444;
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.lobby-content h2 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.connection-status {
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff4444;
+  transition: background-color 0.3s;
+}
+
+.status-indicator.connected {
+  background-color: #44ff44;
+}
+
+.lobby-section {
+  margin-bottom: 20px;
+}
+
+.lobby-section.hidden {
+  display: none;
+}
+
+.player-info {
+  margin-bottom: 20px;
+}
+
+#player-name-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.lobby-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.join-room {
+  display: flex;
+  gap: 10px;
+}
+
+#room-code-input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.lobby-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.lobby-btn:hover {
+  background-color: #45a049;
+}
+
+.lobby-btn:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.lobby-btn.primary {
+  background-color: #2196F3;
+}
+
+.lobby-btn.primary:hover {
+  background-color: #1976D2;
+}
+
+.lobby-btn.secondary {
+  background-color: #f44336;
+}
+
+.lobby-btn.secondary:hover {
+  background-color: #d32f2f;
+}
+
+.small-btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: #666;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.small-btn:hover {
+  background-color: #555;
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+}
+
+.room-info h3 {
+  margin: 0;
+  color: #fff;
+}
+
+#room-code-display {
+  color: #4CAF50;
+  font-family: monospace;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.players-list {
+  margin-bottom: 20px;
+}
+
+.players-list h4 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#players-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#players-ul li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  margin-bottom: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+}
+
+.player-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.player-name {
+  flex: 1;
+  color: #fff;
+}
+
+.host-badge {
+  background-color: #FFD700;
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.room-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.status-message {
+  text-align: center;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  min-height: 20px;
+}
+
+.status-message.error {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #ff6b6b;
+}
+
+.status-message.success {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.status-message.info {
+  background-color: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .lobby-content {
+    padding: 20px;
+  }
+  
+  .join-room {
+    flex-direction: column;
+  }
+  
+  .room-controls {
+    flex-direction: column;
+  }
+  
+  .lobby-btn {
+    width: 100%;
+  }
+}
+
+/* Game Over Screen */
+.game-over-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #444;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  z-index: 1001;
+}
+
+.game-over-screen h2 {
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.game-over-screen button {
+  padding: 10px 30px;
+  background: #4444ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+
+.game-over-screen button:hover {
+  background: #5555ff;
 }

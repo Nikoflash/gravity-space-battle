@@ -1,4 +1,6 @@
 // menu.js
+import lobbyUI from './lobby-ui.js';
+
 export class Menu {
     constructor(startGameCallback, resumeGameCallback, restartGameCallback) {
         this.startGameCallback = startGameCallback;
@@ -10,7 +12,32 @@ export class Menu {
         this.resumeButton.textContent = 'Resume Game';
         this.resumeButton.id = 'resumeButton';
         this.resumeButton.style.display = 'none';
-        this.form.appendChild(this.resumeButton);
+        
+        // Insert resume button into menu-buttons div
+        const menuButtons = this.form.querySelector('.menu-buttons');
+        if (menuButtons) {
+            menuButtons.appendChild(this.resumeButton);
+        } else {
+            this.form.appendChild(this.resumeButton);
+        }
+
+        // Initialize lobby UI
+        lobbyUI.init();
+        
+        // Handle multiplayer button
+        const multiplayerButton = document.getElementById('multiplayerButton');
+        if (multiplayerButton) {
+            multiplayerButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.hide();
+                lobbyUI.show();
+            });
+        }
+        
+        // Listen for show menu event from lobby
+        window.addEventListener('showMenu', () => {
+            this.show();
+        });
 
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -98,13 +125,17 @@ export class Menu {
             },
             gravityDirection: document.getElementById('gravityDirection').value,
             gravityStrength: parseFloat(document.getElementById('gravityStrength').value),
+            spaceshipSize: parseInt(document.getElementById('spaceshipSize').value),
             thrustPower: parseFloat(document.getElementById('thrustPower').value),
+            boostPower: parseFloat(document.getElementById('boostPower').value),
+            boostHealthDrain: parseFloat(document.getElementById('boostHealthDrain').value),
             airResistance: calculatedAirResistance,
             hasMaxSpeed: document.getElementById('hasMaxSpeed').checked,
             maxSpeed: parseFloat(document.getElementById('maxSpeed').value),
             rotationSpeed: parseFloat(document.getElementById('rotationSpeed').value),
             projectileSpeed: parseFloat(document.getElementById('projectileSpeed').value),
-            maxProjectiles: parseInt(document.getElementById('maxProjectiles').value)
+            maxProjectiles: parseInt(document.getElementById('maxProjectiles').value),
+            fireRate: parseFloat(document.getElementById('fireRate').value)
         };
     }
 }

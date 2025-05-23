@@ -12,18 +12,32 @@ export class Spaceship {
     this.controls = controls;
     this.projectiles = [];
     this.thrusting = false;
+    this.boosting = false;
+    this.lastBoostDrainTime = 0;
     this.config = config;
     this.gravitySideTouchTime = 0;
     this.lastGroundDamageTime = 0;
+    this.lastFireTime = 0;
     this.maxHealth = 100;
   }
 
   update(keys, canvas, physics) {
     this.thrusting = false;
+    this.boosting = false;
+    
+    // Handle regular thrust
     if (keys[this.controls.thrust]) {
       this.velocity.x += Math.sin(this.angle) * this.config.thrustPower;
       this.velocity.y -= Math.cos(this.angle) * this.config.thrustPower;
       this.thrusting = true;
+    }
+
+    // Handle boost (extra thrust that drains health)
+    if (keys[this.controls.boost] && this.health > 0) {
+      this.velocity.x += Math.sin(this.angle) * this.config.boostPower;
+      this.velocity.y -= Math.cos(this.angle) * this.config.boostPower;
+      this.boosting = true;
+      this.drainHealthForBoost();
     }
 
     if (keys[this.controls.left]) {
@@ -36,11 +50,12 @@ export class Spaceship {
 
     if (keys[this.controls.fire]) {
       this.fire();
-      keys[this.controls.fire] = false; // Prevent continuous firing
     }
 
     // Apply physics (including air resistance and max speed)
-    physics.updatePosition(this);
+    // When boosting, allow 20% higher max speed
+    const maxSpeed = this.boosting ? this.config.maxSpeed * 1.2 : this.config.maxSpeed;
+    physics.updatePosition(this, maxSpeed);
 
     // Update projectiles
     this.projectiles = this.projectiles.filter((proj) => {
@@ -56,18 +71,42 @@ export class Spaceship {
   }
 
   fire() {
-    if (this.projectiles.length < this.config.maxProjectiles) {
-      const noseX = this.x + Math.sin(this.angle) * 10;
-      const noseY = this.y - Math.cos(this.angle) * 10;
+    const currentTime = Date.now();
+    const timeBetweenShots = 1000 / this.config.fireRate; // Convert fire rate to milliseconds between shots
+    
+    // Check if enough time has passed since last shot and we haven't exceeded max projectiles
+    if (currentTime - this.lastFireTime >= timeBetweenShots && 
+        this.projectiles.length < this.config.maxProjectiles) {
+      // Scale projectile spawn position with spaceship size
+      const noseDistance = (this.config.spaceshipSize / 50) * 10;
+      const noseX = this.x + Math.sin(this.angle) * noseDistance;
+      const noseY = this.y - Math.cos(this.angle) * noseDistance;
       this.projectiles.push(
         new Projectile(noseX, noseY, this.angle, this.config.projectileSpeed)
       );
+      this.lastFireTime = currentTime;
     }
   }
 
   draw(renderer) {
     renderer.drawSpaceship(this);
     this.projectiles.forEach((proj) => renderer.drawProjectile(proj));
+  }
+
+  drainHealthForBoost() {
+    const currentTime = Date.now();
+    const drainInterval = 100; // Drain health every 100ms for smooth drain
+    
+    if (currentTime - this.lastBoostDrainTime >= drainInterval) {
+      const healthToDrain = (this.config.boostHealthDrain * drainInterval) / 1000; // Convert to per-interval drain
+      this.health -= healthToDrain;
+      this.lastBoostDrainTime = currentTime;
+      
+      // Prevent health from going negative
+      if (this.health < 0) {
+        this.health = 0;
+      }
+    }
   }
 
   checkGroundDamage(currentTime, canvas) {
@@ -94,7 +133,9 @@ export class Spaceship {
         Math.pow((this.config.gravityPoint.x * canvas.width) - this.x, 2) +
         Math.pow((this.config.gravityPoint.y * canvas.height) - this.y, 2)
       );
-      inDamageZone = distanceToGravityPoint < 20;
+      // Scale damage zone with spaceship size (default size 50 = radius 20)
+      const damageRadius = (this.config.spaceshipSize / 50) * 20;
+      inDamageZone = distanceToGravityPoint < damageRadius;
     }
 
     if (inDamageZone) {

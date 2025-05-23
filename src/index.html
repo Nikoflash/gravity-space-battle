@@ -64,13 +64,24 @@
               id="gravityStrength"
               min="0"
               step="0.01"
-              value="0.05"
+              value="1.05"
             />
           </label>
         </fieldset>
 
         <fieldset>
           <legend>Ship Movement</legend>
+          <label for="spaceshipSize"
+            >Spaceship Size:
+            <input
+              type="number"
+              id="spaceshipSize"
+              min="20"
+              max="100"
+              step="5"
+              value="50"
+            />
+          </label>
           <label for="thrustPower"
             >Thrust Power:
             <input
@@ -79,6 +90,20 @@
               min="0"
               step="0.1"
               value="0.2"
+            />
+          </label>
+          <label for="boostPower"
+            >Boost Power:
+            <input type="number" id="boostPower" min="0" step="0.1" value="1" />
+          </label>
+          <label for="boostHealthDrain"
+            >Boost Health Drain (HP/sec):
+            <input
+              type="number"
+              id="boostHealthDrain"
+              min="0.1"
+              step="0.1"
+              value="2"
             />
           </label>
           <label for="airResistance"
@@ -121,11 +146,45 @@
           </label>
           <label for="maxProjectiles"
             >Max Projectiles:
-            <input type="number" id="maxProjectiles" min="1" value="5" />
+            <input type="number" id="maxProjectiles" min="1" value="12" />
+          </label>
+          <label for="fireRate"
+            >Fire Rate (bullets/sec):
+            <input
+              type="number"
+              id="fireRate"
+              min="0.5"
+              max="10"
+              step="0.5"
+              value="6"
+            />
           </label>
         </fieldset>
 
-        <button type="submit">Start Game</button>
+        <fieldset>
+          <legend>Controls</legend>
+          <div style="display: flex; justify-content: space-between">
+            <div>
+              <h4>Player 1 (Blue)</h4>
+              <p>W: Thrust</p>
+              <p>A/D: Rotate</p>
+              <p>S: Fire</p>
+              <p><strong>Q: Boost (drains health)</strong></p>
+            </div>
+            <div>
+              <h4>Player 2 (Red)</h4>
+              <p>↑: Thrust</p>
+              <p>←/→: Rotate</p>
+              <p>↓: Fire</p>
+              <p><strong>Shift: Boost (drains health)</strong></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="menu-buttons">
+          <button type="submit">Start Local Game</button>
+          <button type="button" id="multiplayerButton">Play Online</button>
+        </div>
       </form>
     </div>
     <script type="module" src="./js/game.js"></script>
